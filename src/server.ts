@@ -1,13 +1,7 @@
-import express from "express";
-import "express-async-errors";
+import "dotenv/config";
+import app from "./app";
 
-const app = express();
-
-app.get("/", (request, response) => {
-    response.send("Aweome!");
-});
-
-const port = 3000;
+const port = process.env.PORT;
 
 app.listen(port, () => {
     console.log(`[server]: Running on port: ${port}`);
