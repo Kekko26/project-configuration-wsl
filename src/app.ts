@@ -1,20 +1,14 @@
 import express from "express";
 import "express-async-errors";
 
+import prisma from "../src/lib/prisma/client";
+
 const app = express();
 
-app.get("/", (request, response) => {
-    response.setHeader("Content-Type", "application/json");
-    response.json([
-        {
-            name: "George",
-            age: 38,
-        },
-        {
-            name: "Scott",
-            age: 32,
-        },
-    ]);
+app.get("/planets", async (request, response) => {
+    const planets = await prisma.planets.findMany();
+
+    response.json(planets);
 });
 
 export default app;
