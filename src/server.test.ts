@@ -6,7 +6,7 @@ import { prismaMock } from "../src/lib/prisma/client.mock";
 
 const request = supertest(app);
 
-test("GET /", async () => {
+test("GET /planets", async () => {
     const planets = [
         {
             id: 1,
@@ -35,4 +35,18 @@ test("GET /", async () => {
         .expect("Content-Type", /application\/json/);
 
     expect(response.body).toEqual(planets);
+});
+test("POST /planets", async () => {
+    const planet = {
+        name: "Pushed planet",
+        diameter: 50000,
+    };
+
+    const response = await request
+        .post("/planets")
+        .send(planet)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+
+    expect(response.body).toEqual(planet);
 });
