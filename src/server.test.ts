@@ -236,3 +236,23 @@ describe("DELETE /planets/:id", () => {
         expect(response.text).toContain(`Cannot DELETE /planets/peppe`);
     });
 });
+
+describe("POST /planets/:id/photo", () => {
+    test("Not-an-id request", async () => {
+        const response = await request
+            .post("/planets/eueueu/photo")
+            .expect(404)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain(`Cannot POST /planets/eueueu/photo`);
+    });
+
+    test("Invalid request with no upload", async () => {
+        const response = await request
+            .post("/planets/3/photo")
+            .expect(400)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain(`No photo uploaded`);
+    });
+});

@@ -12,11 +12,15 @@ import {
     validationErrorMiddleware,
 } from "./lib/validation";
 
+import { initMulterMiddleware } from "./lib/middlewares/multer";
+
+const upload = initMulterMiddleware();
+
 const app = express();
 
 const corsOptions = {
-    origin: "http://localhost:8080"
-}
+    origin: "http://localhost:8080",
+};
 
 app.use(express.json());
 
@@ -92,6 +96,20 @@ app.delete("/planets/:id(\\d+)", async (request, response, next) => {
         next(`Cannot DELETE /planets/${planetId}`);
     }
 });
+
+app.post(
+    "/planets/:id(\\d+)/photo",
+    upload.single("photo"),
+    async (request, response, next) => {
+        console.log("request.file", request.file);
+
+        if (!request.file) {
+            response.status(400);
+            return next("No photo uploaded");
+        }
+        response.status(201).json(request.file.filename);
+    }
+);
 
 app.use(validationErrorMiddleware);
 
