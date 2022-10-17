@@ -29,7 +29,7 @@ app.get("/planets/:id(\\d+)", async (request, response, next) => {
 
     if (!planet) {
         response.status(404);
-        return next(`Cannot GET planets/${planetId}`);
+        return next(`Cannot GET /planets/${planetId}`);
     }
 
     response.json(planet);
@@ -46,6 +46,27 @@ app.post(
         });
 
         response.status(201).json(planet);
+    }
+);
+
+app.put(
+    "/planets/:id(\\d+)",
+    validate({ body: planetSchema }),
+    async (request, response, next) => {
+        const planetData: PlanetType = request.body;
+        const planetId = Number(request.params.id);
+
+        try {
+            const planet = await prisma.planets.update({
+                where: { id: planetId },
+                data: planetData,
+            });
+
+            response.json(planet);
+        } catch (e) {
+            response.status(404);
+            next(`Cannot PUT /planets/${planetId}`);
+        }
     }
 );
 
