@@ -155,6 +155,23 @@ describe("PUT /planets/:id", () => {
         expect(response.body).toEqual(planet);
     });
 
+    test("Invalid request", async () => {
+        const response = await request
+            .put("/planets/1")
+            .send({
+                description: "Gaia",
+                diameter: 1000,
+            })
+            .expect(422)
+            .expect("Content-Type", /application\/json/);
+
+        expect(response.body).toEqual({
+            errors: {
+                body: expect.any(Array),
+            },
+        });
+    });
+
     test("Not found id request", async () => {
         //@ts-ignore
         prismaMock.planets.update.mockRejectedValue(new Error("ID NOT FOUND"));
@@ -182,5 +199,34 @@ describe("PUT /planets/:id", () => {
             .expect("Content-Type", /text\/html/);
 
         expect(response.text).toContain(`Cannot PUT /planets/peppe`);
+    });
+});
+
+describe("DELETE /planets/:id", () => {
+    test("Valid request", async () => {
+        const response = await request.delete("/planets/1").expect(204);
+
+        expect(response.text).toContain("");
+    });
+
+    test("Not found id request", async () => {
+        //@ts-ignore
+        prismaMock.planets.delete.mockRejectedValue(new Error("ID NOT FOUND"));
+
+        const response = await request
+            .delete("/planets/44")
+            .expect(404)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain(`Cannot DELETE /planets/44`);
+    });
+
+    test("Not-an-id request", async () => {
+        const response = await request
+            .delete("/planets/peppe")
+            .expect(404)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain(`Cannot DELETE /planets/peppe`);
     });
 });

@@ -70,6 +70,21 @@ app.put(
     }
 );
 
+app.delete("/planets/:id(\\d+)", async (request, response, next) => {
+    const planetId = Number(request.params.id);
+
+    try {
+        await prisma.planets.delete({
+            where: { id: planetId },
+        });
+
+        response.status(204).end();
+    } catch (e) {
+        response.status(404);
+        next(`Cannot DELETE /planets/${planetId}`);
+    }
+});
+
 app.use(validationErrorMiddleware);
 
 export default app;
