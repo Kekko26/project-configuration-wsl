@@ -6,47 +6,103 @@ import { prismaMock } from "../src/lib/prisma/client.mock";
 
 const request = supertest(app);
 
-test("GET /planets", async () => {
-    const planets = [
-        {
+describe("GET /planets", () => {
+    test("Valid request", async () => {
+        const planets = [
+            {
+                id: 1,
+                name: "Terra",
+                description: "Gaia",
+                diameter: 6000,
+                createdAt: "2022-10-15T15:01:36.356Z",
+                updatedAt: "2022-10-15T15:01:21.443Z",
+            },
+            {
+                id: 3,
+                name: "Mercurio",
+                description: null,
+                diameter: 3300,
+                createdAt: "2022-10-15T15:02:18.231Z",
+                updatedAt: "2022-10-15T15:02:06.317Z",
+            },
+        ];
+
+        //@ts-ignore
+        prismaMock.planets.findMany.mockResolvedValue(planets);
+
+        const response = await request
+            .get("/planets")
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+
+        expect(response.body).toEqual(planets);
+    });
+});
+
+describe("GET /planets/:id", () => {
+    test("Valid request", async () => {
+        const planets = {
             id: 1,
             name: "Terra",
             description: "Gaia",
             diameter: 6000,
             createdAt: "2022-10-15T15:01:36.356Z",
             updatedAt: "2022-10-15T15:01:21.443Z",
-        },
-        {
-            id: 3,
-            name: "Mercurio",
-            description: null,
-            diameter: 3300,
-            createdAt: "2022-10-15T15:02:18.231Z",
-            updatedAt: "2022-10-15T15:02:06.317Z",
-        },
-    ];
+        };
 
-    //@ts-ignore
-    prismaMock.planets.findMany.mockResolvedValue(planets);
+        //@ts-ignore
+        prismaMock.planets.findUnique.mockResolvedValue(planets);
 
-    const response = await request
-        .get("/planets")
-        .expect(200)
-        .expect("Content-Type", /application\/json/);
+        const response = await request
+            .get("/planets/1")
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
 
-    expect(response.body).toEqual(planets);
+        expect(response.body).toEqual(planets);
+    });
+
+    test("Not found id request", async () => {
+        //@ts-ignore
+        prismaMock.planets.findUnique.mockResolvedValue(null);
+
+        const response = await request
+            .get("/planets/44")
+            .expect(404)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain(`Cannot GET planets/44`);
+    });
+
+    test("Not-an-id request", async () => {
+        const response = await request
+            .get("/planets/peppe")
+            .expect(404)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain(`Cannot GET /planets/peppe`);
+    });
 });
 
 describe("POST /planets", () => {
     test("Valid request", async () => {
         const planet = {
-            name: "Pushed planet",
-            diameter: 50000,
+            id: 10,
+            name: "Pushed Planet",
+            description: null,
+            diameter: 6000,
+            createdAt: "2022-10-15T15:01:36.356Z",
+            updatedAt: "2022-10-15T15:01:21.443Z",
         };
+
+        //@ts-ignore
+        prismaMock.planets.create.mockResolvedValue(planet);
 
         const response = await request
             .post("/planets")
-            .send(planet)
+            .send({
+                name: "Pushed Planet",
+                diameter: 6000,
+            })
             .expect(201)
             .expect("Content-Type", /application\/json/);
 
