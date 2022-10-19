@@ -101,13 +101,13 @@ app.post(
     "/planets/:id(\\d+)/photo",
     upload.single("photo"),
     async (request, response, next) => {
-        console.log("request.file", request.file);
-
         if (!request.file) {
             response.status(400);
             return next("No photo uploaded");
         }
-        response.status(201).json(request.file.filename);
+
+        const filename = request.file.filename;
+        response.status(201).json({ filename });
     }
 );
 
