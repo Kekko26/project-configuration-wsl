@@ -247,26 +247,6 @@ describe("POST /planets/:id/photo", () => {
             .expect("Access-Control-Allow-Origin", "http://localhost:8080");
     });
 
-    test("Valid test with uploaded jpg photo", async () => {
-        await request
-            .post("/planets/3/photo")
-            .attach("photo", "test-fixtures/photos/mountain.jpg")
-            .expect(201)
-            .expect("Access-Control-Allow-Origin", "http://localhost:8080");
-    });
-
-    test("Invalid test with not an image uploaded", async () => {
-        const response = await request
-            .post("/planets/3/photo")
-            .attach("photo", "test-fixtures/photos/text.txt")
-            .expect(500)
-            .expect("Content-Type", /text\/html/);
-
-        expect(response.text).toContain(
-            "Error: uploaded file must be a .png, .jpg or .jpeg image"
-        );
-    });
-
     test("Id not found request", async () => {
         // @ts-ignore
         prismaMock.planets.update.mockRejectedValue(new Error("Error"));
