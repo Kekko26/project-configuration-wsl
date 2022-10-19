@@ -238,12 +238,26 @@ describe("DELETE /planets/:id", () => {
 });
 
 describe("POST /planets/:id/photo", () => {
+    // this first test uses multer.mock.ts to avoid saving tests images on disk everytime a test is done
     test("Valid test with uploaded png photo", async () => {
         await request
             .post("/planets/3/photo")
             .attach("photo", "test-fixtures/photos/planet.png")
             .expect(201)
             .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+    });
+
+    test("Id not found request", async () => {
+        // @ts-ignore
+        prismaMock.planets.update.mockRejectedValue(new Error("Error"));
+
+        const response = await request
+            .post("/planets/59/photo")
+            .attach("photo", "test-fixtures/photos/planet.png")
+            .expect(404)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain("Cannot POST /planets/59/photo");
     });
 
     test("Not-an-id request", async () => {
