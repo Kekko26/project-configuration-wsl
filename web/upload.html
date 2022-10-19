@@ -11,7 +11,11 @@
             action="http://localhost:3000/planets/3/photo"
             enctype="multipart/form-data"
         >
-            <input type="file" name="photo" />
+            <input
+                type="file"
+                name="photo"
+                accept="image/jpeg, image/png, .png, .jpg, .jpeg"
+            />
             <input type="submit" value="Upload photo" />
         </form>
     </body>
