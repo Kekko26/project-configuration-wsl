@@ -4,6 +4,7 @@ import "express-async-errors";
 import { validationErrorMiddleware } from "./lib/middlewares/validation";
 
 import planetsRoute from "./routes/planets";
+
 import { initCorsMiddleware } from "./lib/middlewares/cors";
 
 const app = express();
