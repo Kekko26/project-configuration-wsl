@@ -3,7 +3,9 @@ import addFormats from "ajv-formats";
 
 import { ErrorRequestHandler } from "express";
 
-const validator = new Validator({});
+const validator = new Validator({
+    coerceTypes: true,
+});
 
 addFormats(validator.ajv, ["date-time"]);
 

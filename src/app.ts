@@ -7,7 +7,14 @@ import planetsRoute from "./routes/planets";
 
 import { initCorsMiddleware } from "./lib/middlewares/cors";
 
+import { initSessionMiddleware } from "./lib/middlewares/session";
+import { passport } from "./lib/middlewares/passport";
+
 const app = express();
+
+app.use(initSessionMiddleware());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.json());
 
