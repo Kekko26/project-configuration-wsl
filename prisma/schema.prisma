@@ -17,6 +17,8 @@ model Planets {
     description     String?
     diameter        Int
     photoFilename   String?
+    createdBy       String?
     createdAt       DateTime     @default(now())
     updatedAt       DateTime     @updatedAt
+    updatedBy       String?
 }
