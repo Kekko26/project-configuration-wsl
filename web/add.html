@@ -6,6 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
     <body>
+        <p>
+            <a
+                href="http://localhost:3000/auth/login?redirectTo=http://localhost:8080/add"
+                >Login</a
+            >
+        </p>
+
         <form id="my-form" action="http://localhost:3000/planets" method="post">
             <label for="name">Name</label>
             <input name="name" id="name" type="text" />
@@ -29,6 +36,7 @@
                         "Content-Type": "application/json",
                     },
                     body: formJSON,
+                    credentials: "include",
                 });
                 const responseJson = await response.json();
                 console.log(responseJson);
